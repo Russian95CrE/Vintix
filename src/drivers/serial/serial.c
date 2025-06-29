@@ -20,6 +20,8 @@ static int is_transmit_empty () {
 }
 
 void serial_write (char a) {
+        if (!a)
+                return; // if the pointer is NULL, exit the func.
         while (is_transmit_empty() == 0)
                 ;
         outb(PORT, (unsigned char) a);
