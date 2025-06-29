@@ -12,7 +12,7 @@
 #include "stdio.h"
 
 // FIXED! FINALLY! Just don't use debug before the video init
-bool use_debug = true;
+bool use_debug = false;
 
 // Multiboot2 header structure
 struct multiboot_header {
