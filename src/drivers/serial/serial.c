@@ -26,6 +26,9 @@ void serial_write (char a) {
 }
 
 void serial_writes (const char* s) {
+        if (!s)
+                return; // if the pointer is NULL, exit the func.
+
         while (*s) {
                 serial_write(*s++);
         }
