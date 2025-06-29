@@ -5,7 +5,7 @@
 #include "io/stdio/stdio.h"
 #include "keyboard.h"
 
-#define KBD_DATA_PORT 0x60
+#define KBD_DATA_PORT   0x60
 #define KBD_BUFFER_SIZE 256
 
 // Simple keyboard buffer
@@ -37,63 +37,65 @@ static unsigned char kbd_us_shift[128] = {
 };
 
 static void keyboard_handler (registers_t* regs) {
-    (void) regs;
-    unsigned char scancode = inb(KBD_DATA_PORT);
+        (void) regs;
+        unsigned char scancode = inb(KBD_DATA_PORT);
 
-    // Caps Lock pressed
-    if (scancode == 0x3A) {
-        caps_lock = !caps_lock; // Toggle caps lock
-        return;
-    }
-
-    if (scancode == 0x2A || scancode == 0x36) {
-        shift_pressed = true;
-        return;
-    }
-    if (scancode == 0xAA || scancode == 0xB6) {
-        shift_pressed = false;
-        return;
-    }
-
-    if (scancode < 128) {
-        unsigned char c =
-            shift_pressed ? kbd_us_shift[scancode] : kbd_us[scancode];
-
-        if (caps_lock && !shift_pressed) {
-            // Caps Lock ON + Shift OFF:
-            if (c >= 'a' && c <= 'z') {
-                c -= 32;
-            }
-        } else if (caps_lock && shift_pressed) {
-            // Caps Lock ON + Shift ON:
-            if (c >= 'A' && c <= 'Z') {
-                c += 32;
-            }
+        // Caps Lock pressed
+        if (scancode == 0x3A) {
+                caps_lock = !caps_lock; // Toggle caps lock
+                return;
         }
 
-        if (c != 0) {
-            if ((kbd_buffer_head + 1) % KBD_BUFFER_SIZE != kbd_buffer_tail) {
-                kbd_buffer[kbd_buffer_head] = c;
-                kbd_buffer_head = (kbd_buffer_head + 1) % KBD_BUFFER_SIZE;
-            }
+        if (scancode == 0x2A || scancode == 0x36) {
+                shift_pressed = true;
+                return;
         }
-    }
+        if (scancode == 0xAA || scancode == 0xB6) {
+                shift_pressed = false;
+                return;
+        }
+
+        if (scancode < 128) {
+                unsigned char c =
+                    shift_pressed ? kbd_us_shift[scancode] : kbd_us[scancode];
+
+                if (caps_lock && !shift_pressed) {
+                        // Caps Lock ON + Shift OFF:
+                        if (c >= 'a' && c <= 'z') {
+                                c -= 32;
+                        }
+                } else if (caps_lock && shift_pressed) {
+                        // Caps Lock ON + Shift ON:
+                        if (c >= 'A' && c <= 'Z') {
+                                c += 32;
+                        }
+                }
+
+                if (c != 0) {
+                        if ((kbd_buffer_head + 1) % KBD_BUFFER_SIZE !=
+                            kbd_buffer_tail) {
+                                kbd_buffer[kbd_buffer_head] = c;
+                                kbd_buffer_head =
+                                    (kbd_buffer_head + 1) % KBD_BUFFER_SIZE;
+                        }
+                }
+        }
 }
 
 int getchar () {
-    // Wait for a character to be available
-    while (kbd_buffer_head == kbd_buffer_tail) {
-        __asm__ volatile("sti; hlt"); // Wait for interrupt
-    }
-    __asm__ volatile("cli"); // Disable interrupts while reading buffer
+        // Wait for a character to be available
+        while (kbd_buffer_head == kbd_buffer_tail) {
+                __asm__ volatile("sti; hlt"); // Wait for interrupt
+        }
+        __asm__ volatile("cli"); // Disable interrupts while reading buffer
 
-    int c           = kbd_buffer[kbd_buffer_tail];
-    kbd_buffer_tail = (kbd_buffer_tail + 1) % KBD_BUFFER_SIZE;
+        int c           = kbd_buffer[kbd_buffer_tail];
+        kbd_buffer_tail = (kbd_buffer_tail + 1) % KBD_BUFFER_SIZE;
 
-    __asm__ volatile("sti"); // Re-enable interrupts
-    return c;
+        __asm__ volatile("sti"); // Re-enable interrupts
+        return c;
 }
 
 void keyboard_init (void) {
-    register_irq_handler(1, keyboard_handler);
+        register_irq_handler(1, keyboard_handler);
 }

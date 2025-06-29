@@ -22,5 +22,5 @@
 // }
 
 void panic (void) {
-    // needs a rewrite
+        // TODO: needs a rewrite
 }

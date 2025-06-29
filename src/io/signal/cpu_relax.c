@@ -3,5 +3,5 @@
 #include "cpu_relax.h"
 
 void cpu_relax () {
-    __asm__ volatile("pause");
+        __asm__ volatile("pause");
 }

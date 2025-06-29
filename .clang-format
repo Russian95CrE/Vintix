@@ -1,12 +1,13 @@
 BasedOnStyle: LLVM
 
-IndentWidth: 4
+IndentWidth: 8
 UseTab: Never
 AlignConsecutiveAssignments: true
 AlignConsecutiveDeclarations: true
 AlignOperands: true
 AlignTrailingComments: true
 AlignAfterOpenBracket: Align
+AlignConsecutiveMacros: true
 
 ColumnLimit: 80
 PenaltyReturnTypeOnItsOwnLine: 0

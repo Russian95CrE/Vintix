@@ -23,31 +23,31 @@
 #define MB_LEN_MAX 16
 
 /* Minimum and maximum values for short. */
-#define SHRT_MIN (-32768)
-#define SHRT_MAX 32767
+#define SHRT_MIN  (-32768)
+#define SHRT_MAX  32767
 #define USHRT_MAX 65535U
 
 /* Minimum and maximum values for int. */
-#define INT_MIN (-2147483647 - 1)
-#define INT_MAX 2147483647
+#define INT_MIN  (-2147483647 - 1)
+#define INT_MAX  2147483647
 #define UINT_MAX 4294967295U
 
 /* Minimum and maximum values for long. */
 #if defined(_LP64) || defined(__x86_64__)
 /* LP64: long is 64 bits */
-#define LONG_MIN (-9223372036854775807L - 1)
-#define LONG_MAX 9223372036854775807L
+#define LONG_MIN  (-9223372036854775807L - 1)
+#define LONG_MAX  9223372036854775807L
 #define ULONG_MAX 18446744073709551615UL
 #else
 /* ILP32: long is 32 bits */
-#define LONG_MIN (-2147483647L - 1)
-#define LONG_MAX 2147483647L
+#define LONG_MIN  (-2147483647L - 1)
+#define LONG_MAX  2147483647L
 #define ULONG_MAX 4294967295UL
 #endif
 
 /* Minimum and maximum values for long long. */
-#define LLONG_MIN (-9223372036854775807LL - 1)
-#define LLONG_MAX 9223372036854775807LL
+#define LLONG_MIN  (-9223372036854775807LL - 1)
+#define LLONG_MAX  9223372036854775807LL
 #define ULLONG_MAX 18446744073709551615ULL
 
 /* Additional limits (C99 and POSIX) */
@@ -66,5 +66,5 @@
 /* wchar_t and wint_t */
 #define WCHAR_MIN 0
 #define WCHAR_MAX 4294967295U
-#define WINT_MIN 0u
-#define WINT_MAX 4294967295u
+#define WINT_MIN  0u
+#define WINT_MAX  4294967295u
