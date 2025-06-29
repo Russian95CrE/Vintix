@@ -1,9 +1,7 @@
 /* utoa.c */
 
+#include "charset.h"
 #include "utoa.h"
-
-static const char digits_lower[] = "0123456789abcdef";
-static const char digits_upper[] = "0123456789ABCDEF";
 
 char* _utoa (
     char* buf, char* end, unsigned long value, int base, int uppercase) {
