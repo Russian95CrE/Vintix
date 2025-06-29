@@ -5,16 +5,14 @@
 #include "drivers/keyboard/keyboard.h"
 #include "drivers/serial/serial.h"
 #include "drivers/video/video.h"
+#include "print.h"
 #include "shell/commands.h"
 #include "shell/inish.h"
 #include "signal.h"
 #include "stdio.h"
 
-/*
-Do not use now, it will boot loop, I am fixing this in the
-next commit. (Yes, of course, I am fixing this in future)
-*/
-bool use_debug = false;
+// FIXED! FINALLY! Just don't use debug before the video init
+bool use_debug = true;
 
 // Multiboot2 header structure
 struct multiboot_header {
@@ -52,6 +50,10 @@ struct multiboot_tag_framebuffer {
 #define MULTIBOOT_TAG_TYPE_FRAMEBUFFER 8
 
 static struct framebuffer_info fb_info = {0};
+
+void debug_init (void) {
+        use_debug = true;
+}
 
 // Function to map a physical address to virtual address in page tables
 static void map_framebuffer_address (uint64_t phys_addr) {
@@ -127,8 +129,9 @@ static void parse_multiboot_info (void* mb_info) {
                         default:
                                 // This is not an error, just an unhandled tag.
                                 // We can print info about it if we want.
-                                if (use_debug)
-                                        serial_writes("Unhandled tag found\n");
+                                // duts("Unhandled tag found");
+                                // But for the love of god, DO NOT FUCKING
+                                // ENABLE THIS!
                                 break;
                 }
 
@@ -143,17 +146,6 @@ static void parse_multiboot_info (void* mb_info) {
 void kernel_main (void* mb_info) {
         // In this case, we must use use_debug instead of the functions that
         // check debug
-        if (use_debug) {
-                puts("mb_info pointer: 0x");
-                puthex((uint64_t) mb_info);
-                puts("\nDump: ");
-                uint8_t* p = (uint8_t*) mb_info;
-                for (int i = 0; i < 32; ++i) {
-                        puthex(p[i]);
-                        putchar(' ');
-                }
-                putchar('\n');
-        }
         // Initialize crucial components first. The IDT must be loaded before
         // any hardware is touched to prevent triple faults.
         idt_init();
@@ -174,41 +166,11 @@ void kernel_main (void* mb_info) {
                 video_init(&fb_info);
         } else {
                 // No framebuffer, no visual output possible.
-                duts("No framebuffer found! Halting...");
                 poweroff();
         }
 
-        // Again, we must use use_debug instead of the funcs that check debug
-        if (use_debug) {
-                puts("Framebuffer found!");
-                puts("Address: 0x");
-                puthex(fb_info.addr);
-                puts("\nWidth: ");
-                putdec(fb_info.width);
-                puts("\nHeight: ");
-                putdec(fb_info.height);
-                puts("\nPitch: ");
-                putdec(fb_info.pitch);
-                puts("\nBPP: ");
-                putdec(fb_info.bpp);
-                puts("\nType: ");
-                putdec(fb_info.type);
-                puts("\nRed mask: size=");
-                putdec(fb_info.red_mask_size);
-                puts(" shift=");
-                putdec(fb_info.red_mask_shift);
-                puts("\nGreen mask: size=");
-                putdec(fb_info.green_mask_size);
-                puts(" shift=");
-                putdec(fb_info.green_mask_shift);
-                puts("\nBlue mask: size=");
-                putdec(fb_info.blue_mask_size);
-                puts(" shift=");
-                putdec(fb_info.blue_mask_shift);
-                puts("\n");
-        }
-
         keyboard_init();
+        debug_init();
 
         // Enable interrupts now that all basic drivers are loaded.
         __asm__ volatile("sti");

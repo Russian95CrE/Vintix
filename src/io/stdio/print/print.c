@@ -1,7 +1,7 @@
 /* print.c */
 
 #include "core/kernel.h"
-#include "io/stdio/stddef.h"
+#include "drivers/serial/serial.h"
 #include "stdarg.h"
 #include "stdio.h"
 #include "utoa.h"
@@ -54,8 +54,8 @@ void duts (const char* s) {
         if (!use_debug) {
                 return;
         }
-        video_puts(s);
-        putchar('\n');
+        serial_writes(s);
+        serial_write('\n');
 }
 
 int vsnprintf (char* buffer, size_t size, const char* format, va_list args) {
@@ -289,23 +289,22 @@ int printf (const char* format, ...) {
 }
 
 int debugf (const char* format, ...) {
-        if (!use_debug) {
+        if (!use_debug)
                 return 0;
-        }
+
         my_va_list args;
         my_va_start(args, format);
         int count = 0;
 
         for (const char* p = format; *p; ++p) {
                 if (*p != '%') {
-                        putchar(*p);
+                        serial_write(*p);
                         count++;
                         continue;
                 }
 
                 p++;
 
-                // Field width and left alignment
                 int left_align = 0;
                 int width      = 0;
 
@@ -331,19 +330,17 @@ int debugf (const char* format, ...) {
 
                                 if (!left_align) {
                                         for (int i = 0; i < pad; ++i) {
-                                                putchar(' ');
+                                                serial_write(' ');
                                                 count++;
                                         }
                                 }
 
-                                for (int i = 0; i < len; ++i) {
-                                        putchar(s[i]);
-                                        count++;
-                                }
+                                serial_writes(s);
+                                count += len;
 
                                 if (left_align) {
                                         for (int i = 0; i < pad; ++i) {
-                                                putchar(' ');
+                                                serial_write(' ');
                                                 count++;
                                         }
                                 }
@@ -351,56 +348,56 @@ int debugf (const char* format, ...) {
                         }
 
                         case 'd': {
-                                int n = my_va_arg(args, int);
+                                int   n = my_va_arg(args, int);
+                                char  buf[12];
+                                char* ptr = buf;
+
                                 if (n < 0) {
-                                        putchar('-');
-                                        count++;
-                                        n = -n;
+                                        *ptr++ = '-';
+                                        n      = -n;
                                 }
 
-                                putdec((uint32_t) n);
-
-                                int temp = n, digits = 1;
-                                while (temp >= 10) {
-                                        temp /= 10;
-                                        digits++;
-                                }
-                                count += digits;
+                                ptr  = _utoa(ptr,
+                                            buf + sizeof(buf) - 1,
+                                            (unsigned int) n,
+                                            10,
+                                            0);
+                                *ptr = '\0';
+                                serial_writes(buf);
+                                count += (int) (ptr - buf);
                                 break;
                         }
 
                         case 'x': {
                                 unsigned int n = my_va_arg(args, unsigned int);
-                                puthex((uint64_t) n);
-
-                                unsigned int temp   = n;
-                                int          digits = 1;
-                                while (temp >= 16) {
-                                        temp /= 16;
-                                        digits++;
-                                }
-                                count += digits;
+                                char         buf[12];
+                                char*        ptr =
+                                    _utoa(buf, buf + sizeof(buf) - 1, n, 16, 0);
+                                *ptr = '\0';
+                                serial_writes(buf);
+                                count += (int) (ptr - buf);
                                 break;
                         }
 
                         case 'c': {
                                 char c = (char) my_va_arg(args, int);
-                                putchar(c);
+                                serial_write(c);
                                 count++;
                                 break;
                         }
 
                         case '%': {
-                                putchar('%');
+                                serial_write('%');
                                 count++;
                                 break;
                         }
 
-                        default:
-                                putchar('%');
-                                putchar(*p);
+                        default: {
+                                serial_write('%');
+                                serial_write(*p);
                                 count += 2;
                                 break;
+                        }
                 }
         }
 
