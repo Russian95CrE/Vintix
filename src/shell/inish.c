@@ -22,8 +22,9 @@ static char command_history[MAX_HISTORY][CMD_BUFFER_SIZE];
 static int  history_count  = 0;
 int         input_overflow = 0;
 
-const char* version    = "pre-beta-003";
+const char* version    = "pre-beta-004";
 const char* build_date = "29/06/2025"; // using non-american date format
+const char* build_time = "place-holder :O";
 
 // Command handler function type
 typedef void (*command_func_t)(const char* args);
@@ -199,6 +200,7 @@ static void cmd_vfetch (const char* args) {
         puts("Kernel: Vintix");
         printf("Version: %s\n", version);
         printf("Build date: %s\n", build_date);
+        printf("Build time: %s\n", build_time);
 }
 
 static void cmd_display_info (const char* args) {

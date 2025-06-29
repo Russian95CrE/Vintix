@@ -1,8 +1,7 @@
 /* print.c */
 
 #include "core/kernel.h"
-#include "drivers/serial/serial.h"
-#include "drivers/video/video.h"
+#include "drivers/driver.h"
 #include "stdarg.h"
 #include "stdio.h"
 #include "utoa.h"
