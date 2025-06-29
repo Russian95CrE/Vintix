@@ -2,9 +2,6 @@
 
 #include "core/idt.h"
 #include "drivers/driver.h"
-#include "drivers/keyboard/keyboard.h"
-#include "drivers/serial/serial.h"
-#include "drivers/video/video.h"
 #include "print.h"
 #include "shell/commands.h"
 #include "shell/inish.h"

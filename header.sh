@@ -33,5 +33,5 @@ for file in $(find . -type f -name "*.c"); do
 done
 
 if [ "$headers_bad" = false ]; then
-    echo "Nop, everything is good."
+    echo "Nah, everything is good."
 fi

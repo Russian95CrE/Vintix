@@ -1,3 +1,5 @@
 #pragma once
 
-void driver_init (void);
+#include "keyboard/keyboard.h"
+#include "serial/serial.h"
+#include "video/video.h"
