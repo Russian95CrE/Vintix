@@ -22,8 +22,8 @@ static char command_history[MAX_HISTORY][CMD_BUFFER_SIZE];
 static int  history_count  = 0;
 int         input_overflow = 0;
 
-const char* version    = "pre-beta-002";
-const char* build_date = "28/06/2025"; // using non-american date format
+const char* version    = "pre-beta-003";
+const char* build_date = "29/06/2025"; // using non-american date format
 
 // Command handler function type
 typedef void (*command_func_t)(const char* args);

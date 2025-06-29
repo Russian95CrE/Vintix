@@ -2,6 +2,7 @@
 
 #include "core/kernel.h"
 #include "drivers/serial/serial.h"
+#include "drivers/video/video.h"
 #include "stdarg.h"
 #include "stdio.h"
 #include "utoa.h"
@@ -403,4 +404,8 @@ int debugf (const char* format, ...) {
 
         my_va_end(args);
         return count;
+}
+
+void putchar (int c) {
+        video_putchar((char) c);
 }

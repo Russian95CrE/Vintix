@@ -11,3 +11,4 @@ void duts (const char* s);
 int  vsnprintf (char* buffer, size_t size, const char* format, va_list args);
 int  printf (const char* format, ...);
 int  debugf (const char* format, ...);
+void putchar (int c);

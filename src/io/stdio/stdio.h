@@ -2,7 +2,6 @@
 
 // stdio implementations
 #include "print/print.h"
-#include "putchar/putchar.h"
 #include "stdbool.h"
 #include "stddef.h"
 #include "stdint.h"
